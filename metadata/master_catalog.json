@@ -1,0 +1,57 @@
+{
+  "$schema": "https://frictionlessdata.io/schemas/data-package.json",
+  "name": "nys-ev-adoption-analysis",
+  "title": "NYS Electric Vehicle Adoption & Charging Infrastructure Catalog",
+  "description": "Master metadata catalog indexing raw and curated collections for NY State EV uptake analysis.",
+  "version": "1.0.0",
+  "created": "2026-10-06T18:00:00Z",
+  "standards": {
+    "temporal": "ISO 8601",
+    "spatial": "EPSG:4326 (WGS 84)",
+    "county_normalization": "FIPS 3-digit"
+  },
+  "logical_collections": [
+    {
+      "id": "coll_ev_registrations_raw",
+      "name": "NYS DMV / NYSERDA Electric Vehicle Registrations",
+      "tier": "raw",
+      "source_endpoint": "https://data.ny.gov/resource/x9ct-hwyv.json",
+      "format": "application/json",
+      "path": "data/raw/nyserda/raw_ev_registrations.json",
+      "record_count": 221726,
+      "checksum_sha256": "6e1c6e323738bb177560f4520cbf45b8dc2277c6f97abb89a99392a06e15d73f"
+    },
+    {
+      "id": "coll_charging_stations_raw",
+      "name": "NLR / AFDC Alternative Fuel Stations (NY)",
+      "tier": "raw",
+      "source_endpoint": "https://developer.nlr.gov/api/alt-fuel-stations/v1.json",
+      "format": "application/json",
+      "path": "data/raw/nlr/raw_stations.json",
+      "record_count": 6092,
+      "checksum_sha256": "9a7a7a9918bfd27ee929f02ccd47b664e1f75cb90549553d6b33a234afa62a2e"
+    },
+    {
+      "id": "coll_county_boundaries_raw",
+      "name": "US Census Bureau NY County Cartographic Boundaries",
+      "tier": "raw",
+      "source_endpoint": "https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json",
+      "format": "application/geo+json",
+      "path": "data/raw/boundaries/ny_county_boundaries.geojson",
+      "record_count": 62,
+      "checksum_sha256": "48d8cd2a3b3b24f5a2beff48e56b82531a7836377f0a92d40902996d9da49386"
+    },
+    {
+      "id": "coll_curated_tables",
+      "name": "Normalized Curated Infrastructure & Registrations",
+      "tier": "curated",
+      "formats": ["application/vnd.apache.parquet", "application/x-duckdb"],
+      "artifacts": [
+        "data/curated/parquet/curated_stations.parquet",
+        "data/curated/parquet/curated_ev_registrations.parquet",
+        "data/curated/duckdb/ev_infrastructure.duckdb"
+      ],
+      "checksum_manifest": "metadata/checksums_curated.sha256"
+    }
+  ]
+}
