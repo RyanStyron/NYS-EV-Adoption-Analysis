@@ -133,9 +133,7 @@ def transform_registrations(fips_lookup: dict[str, str]) -> pd.DataFrame:
     return df
 
 
-def build_duckdb_schema(
-    df_stations: pd.DataFrame, df_registrations: pd.DataFrame
-) -> None:
+def build_duckdb_schema(df_stations: pd.DataFrame, df_registrations: pd.DataFrame) -> None:
     print("[RELATIONAL] Compiling relational tables into DuckDB...")
     DUCKDB_PATH.parent.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(str(DUCKDB_PATH))
@@ -144,22 +142,45 @@ def build_duckdb_schema(
         "CREATE OR REPLACE TABLE charging_stations AS SELECT * FROM df_stations"
     )
     con.execute(
-        "CREATE OR REPLACE TABLE ev_registrations AS SELECT * FROM"
-        " df_registrations"
+        "CREATE OR REPLACE TABLE ev_registrations AS SELECT * FROM df_registrations"
     )
 
     con.execute("""
         CREATE OR REPLACE VIEW county_infrastructure_summary AS
+        WITH distinct_station_ports AS (
+            SELECT 
+                station_id,
+                CAST(county_fips AS VARCHAR) AS county_fips,
+                level2_ports,
+                dc_fast_ports
+            FROM charging_stations
+            QUALIFY ROW_NUMBER() OVER (PARTITION BY station_id ORDER BY station_id) = 1
+        ),
+        county_station_aggs AS (
+            SELECT 
+                county_fips,
+                COUNT(station_id) AS total_stations,
+                COALESCE(SUM(level2_ports), 0) AS total_level2_ports,
+                COALESCE(SUM(dc_fast_ports), 0) AS total_dc_fast_ports
+            FROM distinct_station_ports
+            GROUP BY county_fips
+        ),
+        county_ev_aggs AS (
+            SELECT 
+                CAST(county_fips AS VARCHAR) AS county_fips,
+                COUNT(*) AS total_ev_registrations
+            FROM ev_registrations
+            GROUP BY county_fips
+        )
         SELECT 
-            COALESCE(CAST(s.county_fips AS VARCHAR), CAST(r.county_fips AS VARCHAR)) AS county_fips,
-            COUNT(DISTINCT s.station_id) AS total_stations,
-            COALESCE(SUM(s.level2_ports), 0) AS total_level2_ports,
-            COALESCE(SUM(s.dc_fast_ports), 0) AS total_dc_fast_ports,
-            COUNT(r.county_clean) AS total_ev_registrations
-        FROM charging_stations s
-        FULL OUTER JOIN ev_registrations r
-            ON CAST(s.county_fips AS VARCHAR) = CAST(r.county_fips AS VARCHAR)
-        GROUP BY 1
+            COALESCE(s.county_fips, r.county_fips) AS county_fips,
+            COALESCE(s.total_stations, 0) AS total_stations,
+            COALESCE(s.total_level2_ports, 0) AS total_level2_ports,
+            COALESCE(s.total_dc_fast_ports, 0) AS total_dc_fast_ports,
+            COALESCE(r.total_ev_registrations, 0) AS total_ev_registrations
+        FROM county_station_aggs s
+        FULL OUTER JOIN county_ev_aggs r
+            ON s.county_fips = r.county_fips;
     """)
     con.close()
     print(f"  DuckDB database initialized at {DUCKDB_PATH}")
