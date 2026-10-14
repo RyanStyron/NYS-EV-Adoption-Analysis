@@ -10,6 +10,18 @@
     "spatial": "EPSG:4326 (WGS 84)",
     "county_normalization": "FIPS 3-digit"
   },
+  "licenses": [
+    {
+      "name": "MIT",
+      "path": "https://opensource.org/licenses/MIT",
+      "title": "MIT License (Pipeline Code and Curated Views)"
+    },
+    {
+      "name": "CC0-1.0",
+      "path": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "title": "Public Domain / Open Government Data (Upstream NYSERDA & AFDC)"
+    }
+  ],
   "logical_collections": [
     {
       "id": "coll_ev_registrations_raw",
