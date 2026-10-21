@@ -1,0 +1,71 @@
+=== Data quality ===
+Station rows (connector-level): 6705  unique stations: 6092
+Stations placed in a county by spatial join: 6087
+Registrations: 221726  mapped to NY county: 215615  out-of-state: 6111
+Model year < 2010 (conversions/legacy EVs): 1136
+
+=== Region comparison ===
+                  evs  total_ports  dc_fast_ports  evs_per_port  evs_per_dcfc
+region                                                                       
+NYC metro      149562         9751           1426          15.3         104.9
+Rest of state   66053        14289           2182           4.6          30.3
+
+=== Summary statistics: per-county ===
+           evs  total_ports  dc_fast_ports  evs_per_port
+count     62.0         62.0           62.0          62.0
+mean    3477.7        387.7           58.2           7.0
+std     6932.4        485.9           70.9           8.5
+min       37.0         12.0            0.0           0.9
+25%      245.2         76.8           14.0           2.8
+50%      526.0        147.0           33.0           4.0
+75%     3334.8        509.8           69.2           7.4
+max    34968.0       1853.0          393.0          54.9
+Correlation of log(EVs) vs log(ports): r = 0.88
+Top 5 counties hold 56.7% of NY-registered EVs
+
+Top 10 counties by EVs:
+            name    evs  total_ports  evs_per_port
+059       Nassau  34968          964          36.3
+103      Suffolk  27939         1426          19.6
+119  Westchester  22953         1651          13.9
+081       Queens  20802         1267          16.4
+047        Kings  15484         1096          14.1
+055       Monroe  10252         1493           6.9
+029         Erie   8703         1180           7.4
+061     New York   8610         1853           4.6
+085     Richmond   6590          120          54.9
+087     Rockland   5863          807           7.3
+
+Highest EVs per port:
+           name    evs  total_ports  evs_per_port
+085    Richmond   6590          120          54.9
+059      Nassau  34968          964          36.3
+115  Washington    320           15          21.3
+103     Suffolk  27939         1426          19.6
+081      Queens  20802         1267          16.4
+
+Lowest EVs per port:
+            name  evs  total_ports  evs_per_port
+041     Hamilton   37           39           0.9
+031        Essex  357          241           1.5
+037      Genesee  276          144           1.9
+113       Warren  620          323           1.9
+009  Cattaraugus  205           99           2.1
+
+Model year counts:
+ model_year  2018  2019  2020   2021   2022   2023   2024   2025   2026  2027
+vehicles    4148  4103  6141  11605  19623  48341  44570  38627  37661  1024
+
+Make share:
+ make  TESLA  CHEVR  FORD  HYUND  HONDA  RIVIA  KIA  CADIL  BMW  TOYOT
+pct    48.5    7.0   5.5    3.7    3.4    3.4  3.1    2.8  2.7    2.7
+
+Cumulative ports (last 6 years):
+            level2_ports  dc_fast_ports
+open_year                             
+2021               4824            768
+2022               7470           1106
+2023              10344           1461
+2024              14138           2172
+2025              17752           3097
+2026              20123           3594
